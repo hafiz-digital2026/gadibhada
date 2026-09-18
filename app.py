@@ -25,12 +25,47 @@ app.secret_key = os.environ.get("SECRET_KEY", "gadibhada-secret-key-change-this"
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "gadibhada.db")
 
-# Admin login - set these as environment variables on your server for real use,
-# warna yahan diye defaults chalenge (production me isse zaroor badal dein!).
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
-# Yahan seedha apna password likh dein (neeche wali line me "GadiBhada@2026" ki jagah).
-# Isse koi extra command (env variable set karna) chalane ki zaroorat nahi padegi.
-ADMIN_PASSWORD_HASH = generate_password_hash(os.environ.get("ADMIN_PASSWORD", "GadiBhada@20266"))
+# Agar DATABASE_URL diya gaya hai (jaise Supabase/Render Postgres), to us permanent
+# database ka use hoga - isse data kabhi reset nahi hoga. Warna local SQLite file use hogi.
+DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
+USE_POSTGRES = bool(DATABASE_URL)
+
+if USE_POSTGRES:
+    import psycopg2
+    import psycopg2.extras
+    DB_INTEGRITY_ERRORS = (psycopg2.IntegrityError,)
+else:
+    DB_INTEGRITY_ERRORS = (sqlite3.IntegrityError,)
+
+
+class DBConn:
+    """SQLite aur PostgreSQL, dono ke liye ek jaisa interface deta hai -
+    conn.execute(query, params).fetchall() / fetchone() sab jagah kaam karega,
+    chahe SQLite chal rahi ho ya Supabase/Postgres."""
+
+    def __init__(self):
+        if USE_POSTGRES:
+            self._conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+        else:
+            self._conn = sqlite3.connect(DB_PATH)
+            self._conn.row_factory = sqlite3.Row
+
+    def execute(self, query, params=()):
+        if USE_POSTGRES:
+            # SQLite "?" placeholders ko Postgres ke "%s" me badal dete hain
+            cur = self._conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cur.execute(query.replace("?", "%s"), params)
+            return cur
+        return self._conn.execute(query, params)
+
+    def commit(self):
+        self._conn.commit()
+
+    def rollback(self):
+        self._conn.rollback()
+
+    def close(self):
+        self._conn.close()
 
 
 def admin_required(view_func):
@@ -42,21 +77,28 @@ def admin_required(view_func):
     return wrapper
 
 
+# Admin login - set these as environment variables on your server for real use,
+# warna yahan diye defaults chalenge (production me isse zaroor badal dein!).
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+# Yahan seedha apna password likh dein (neeche wali line me "GadiBhada@2026" ki jagah).
+# Isse koi extra command (env variable set karna) chalane ki zaroorat nahi padegi.
+ADMIN_PASSWORD_HASH = generate_password_hash(os.environ.get("ADMIN_PASSWORD", "GadiBhada@2026"))
+
+
 # ---------------------------------------------------------------------------
 # Database setup
 # ---------------------------------------------------------------------------
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+    return DBConn()
 
 
 def init_db():
     conn = get_db()
+    id_col = "id SERIAL PRIMARY KEY" if USE_POSTGRES else "id INTEGER PRIMARY KEY AUTOINCREMENT"
     conn.execute(
-        """
+        f"""
         CREATE TABLE IF NOT EXISTS drivers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            {id_col},
             name TEXT NOT NULL,
             vehicle_type TEXT NOT NULL,
             vehicle_number TEXT NOT NULL UNIQUE,
@@ -75,9 +117,9 @@ def init_db():
         """
     )
     conn.execute(
-        """
+        f"""
         CREATE TABLE IF NOT EXISTS bookings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            {id_col},
             driver_id INTEGER NOT NULL,
             driver_name TEXT NOT NULL,
             driver_contact TEXT NOT NULL,
@@ -87,15 +129,14 @@ def init_db():
             pickup_lat REAL,
             pickup_lon REAL,
             status TEXT DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (driver_id) REFERENCES drivers (id)
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         """
     )
     conn.execute(
-        """
+        f"""
         CREATE TABLE IF NOT EXISTS complaints (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            {id_col},
             reporter_type TEXT NOT NULL,
             name TEXT NOT NULL,
             contact_number TEXT NOT NULL,
@@ -110,9 +151,14 @@ def init_db():
     # Purani database ho to naye columns add kar dein (migration) - agar pehle se hain to error ignore
     for col in ["village TEXT", "post_office TEXT", "police_station TEXT", "district TEXT", "pincode TEXT"]:
         try:
-            conn.execute(f"ALTER TABLE drivers ADD COLUMN {col}")
+            if USE_POSTGRES:
+                conn.execute(f"ALTER TABLE drivers ADD COLUMN IF NOT EXISTS {col}")
+            else:
+                conn.execute(f"ALTER TABLE drivers ADD COLUMN {col}")
         except sqlite3.OperationalError:
             pass
+        except DB_INTEGRITY_ERRORS:
+            conn.rollback()
     conn.commit()
     conn.close()
 
@@ -170,8 +216,11 @@ if ('serviceWorker' in navigator) {
 </script>
 <style>
   body { font-family: system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 0; }
-  .nav { background: #1b5e20; padding: 14px 20px; }
-  .nav a { color: #fff; text-decoration: none; margin-right: 20px; font-weight: 600; }
+  .nav { background: #1b5e20; padding: 10px 14px; display: flex; flex-wrap: wrap;
+         gap: 4px 14px; align-items: center; }
+  .nav a { color: #fff; text-decoration: none; font-weight: 600; font-size: 14px;
+           padding: 6px 2px; white-space: nowrap; }
+  .nav a.admin-link { margin-left: auto; opacity: 0.85; }
   .container { max-width: 560px; margin: 30px auto; background: #fff; padding: 24px 28px;
                border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
   h1 { color: #1b5e20; font-size: 22px; }
@@ -200,7 +249,7 @@ HOME_HTML = """
   <a href="{{ url_for('search') }}">Gadi Dhundhein</a>
   <a href="{{ url_for('my_bookings') }}">Meri Bookings</a>
   <a href="{{ url_for('help_page') }}">Help / Shikayat</a>
-  <a href="{{ url_for('admin_login') }}" style="float:right;">Admin</a>
+  <a href="{{ url_for('admin_login') }}" class="admin-link">Admin</a>
 </div>
 <div class="container">
   <h1>🚗 Gadi Bhada me Swagat Hai</h1>
@@ -219,7 +268,7 @@ REGISTER_HTML = """
   <a href="{{ url_for('search') }}">Gadi Dhundhein</a>
   <a href="{{ url_for('my_bookings') }}">Meri Bookings</a>
   <a href="{{ url_for('help_page') }}">Help / Shikayat</a>
-  <a href="{{ url_for('admin_login') }}" style="float:right;">Admin</a>
+  <a href="{{ url_for('admin_login') }}" class="admin-link">Admin</a>
 </div>
 <div class="container">
   <h1>🚖 Apni Gadi Register Karein</h1>
@@ -291,7 +340,7 @@ SEARCH_HTML = """
   <a href="{{ url_for('search') }}">Gadi Dhundhein</a>
   <a href="{{ url_for('my_bookings') }}">Meri Bookings</a>
   <a href="{{ url_for('help_page') }}">Help / Shikayat</a>
-  <a href="{{ url_for('admin_login') }}" style="float:right;">Admin</a>
+  <a href="{{ url_for('admin_login') }}" class="admin-link">Admin</a>
 </div>
 <div class="container">
   <h1>🔍 Nazdeek ki Gadi Dhundhein</h1>
@@ -434,7 +483,7 @@ BOOK_HTML = """
   <a href="{{ url_for('search') }}">Gadi Dhundhein</a>
   <a href="{{ url_for('my_bookings') }}">Meri Bookings</a>
   <a href="{{ url_for('help_page') }}">Help / Shikayat</a>
-  <a href="{{ url_for('admin_login') }}" style="float:right;">Admin</a>
+  <a href="{{ url_for('admin_login') }}" class="admin-link">Admin</a>
 </div>
 <div class="container">
   {% if driver %}
@@ -471,7 +520,7 @@ BOOKING_CONFIRM_HTML = """
   <a href="{{ url_for('search') }}">Gadi Dhundhein</a>
   <a href="{{ url_for('my_bookings') }}">Meri Bookings</a>
   <a href="{{ url_for('help_page') }}">Help / Shikayat</a>
-  <a href="{{ url_for('admin_login') }}" style="float:right;">Admin</a>
+  <a href="{{ url_for('admin_login') }}" class="admin-link">Admin</a>
 </div>
 <div class="container">
   <h1>✅ Booking Request Bhej Di Gayi</h1>
@@ -491,7 +540,7 @@ MY_BOOKINGS_HTML = """
   <a href="{{ url_for('search') }}">Gadi Dhundhein</a>
   <a href="{{ url_for('my_bookings') }}">Meri Bookings</a>
   <a href="{{ url_for('help_page') }}">Help / Shikayat</a>
-  <a href="{{ url_for('admin_login') }}" style="float:right;">Admin</a>
+  <a href="{{ url_for('admin_login') }}" class="admin-link">Admin</a>
 </div>
 <div class="container">
   <h1>📋 Meri Bookings (Driver)</h1>
@@ -540,7 +589,7 @@ HELP_HTML = """
   <a href="{{ url_for('search') }}">Gadi Dhundhein</a>
   <a href="{{ url_for('my_bookings') }}">Meri Bookings</a>
   <a href="{{ url_for('help_page') }}">Help / Shikayat</a>
-  <a href="{{ url_for('admin_login') }}" style="float:right;">Admin</a>
+  <a href="{{ url_for('admin_login') }}" class="admin-link">Admin</a>
 </div>
 <div class="container">
   <h1>🆘 Help / Shikayat Darj Karein</h1>
@@ -587,9 +636,9 @@ ADMIN_LOGIN_HTML = """
   {% endwith %}
   <form method="POST">
     <label>Admin ID</label>
-    <input type="text" name="username" required>
+    <input type="text" name="username" autocapitalize="off" autocorrect="off" spellcheck="false" required>
     <label>Password</label>
-    <input type="password" name="password" required>
+    <input type="password" name="password" autocapitalize="off" autocorrect="off" spellcheck="false" required>
     <button type="submit">Login</button>
   </form>
 </div>
@@ -611,7 +660,7 @@ ADMIN_DASHBOARD_HTML = """
 <div class="nav">
   <a href="{{ url_for('home') }}">Gadi Bhada</a>
   <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
-  <a href="{{ url_for('admin_logout') }}" style="float:right;">Logout</a>
+  <a href="{{ url_for('admin_logout') }}" class="admin-link">Logout</a>
 </div>
 <div class="container" style="max-width: 900px;">
   <h1>🛠️ Admin Dashboard</h1>
@@ -693,7 +742,7 @@ ADMIN_EDIT_DRIVER_HTML = """
 <div class="nav">
   <a href="{{ url_for('home') }}">Gadi Bhada</a>
   <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
-  <a href="{{ url_for('admin_logout') }}" style="float:right;">Logout</a>
+  <a href="{{ url_for('admin_logout') }}" class="admin-link">Logout</a>
 </div>
 <div class="container">
   <h1>✏️ Driver Details Edit Karein</h1>
@@ -843,7 +892,8 @@ def register():
                 data,
             )
             conn.commit()
-        except sqlite3.IntegrityError:
+        except DB_INTEGRITY_ERRORS:
+            conn.rollback()
             flash("⚠️ Ye gadi number pehle se register hai. Dobara register nahi ho sakta.")
             conn.close()
             return redirect(url_for("register"))
@@ -1028,8 +1078,8 @@ def help_page():
 def admin_login():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
-        password = request.form.get("password", "")
-        if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD_HASH, password):
+        password = request.form.get("password", "").strip()
+        if username.lower() == ADMIN_USERNAME.lower() and check_password_hash(ADMIN_PASSWORD_HASH, password):
             session["is_admin"] = True
             return redirect(url_for("admin_dashboard"))
         flash("Galat Admin ID ya Password.")
@@ -1130,7 +1180,8 @@ def admin_edit_driver(driver_id):
                 ),
             )
             conn.commit()
-        except sqlite3.IntegrityError:
+        except DB_INTEGRITY_ERRORS:
+            conn.rollback()
             flash("⚠️ Ye gadi number kisi doosre driver ke paas pehle se hai.")
             conn.close()
             return redirect(url_for("admin_edit_driver", driver_id=driver_id))
