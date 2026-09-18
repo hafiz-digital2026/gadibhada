@@ -242,7 +242,11 @@ if ('serviceWorker' in navigator) {
 """
 
 HOME_HTML = """
-<!doctype html><html><head><title>Gadi Bhada</title>{{ style|safe }}</head><body>
+<!doctype html><html><head>
+<title>Gadi Bhada - Bhada Gadi | Gari Bhara Online Booking</title>
+<meta name="description" content="Gadi Bhada - Bhada Gadi, Gari Bhara, Bhara Gari online book karein. Apne area ke sabse nazdeek Auto, Car, Bike, Van, Truck dhundhein aur seedha driver ka contact number payein.">
+<meta name="keywords" content="gadi bhada, bhada gadi, gadibhada, bhadagadi, gari bhara, bhara gari, garibhara, bharagari, car rental near me, auto booking, malda gadi bhada">
+{{ style|safe }}</head><body>
 <div class="nav">
   <a href="{{ url_for('home') }}">Gadi Bhada</a>
   <a href="{{ url_for('register') }}">Gadi Register Karein</a>
@@ -252,10 +256,12 @@ HOME_HTML = """
   <a href="{{ url_for('admin_login') }}" class="admin-link">Admin</a>
 </div>
 <div class="container">
-  <h1>🚗 Gadi Bhada me Swagat Hai</h1>
+  <h1>🚗 Gadi Bhada (Bhada Gadi / Gari Bhara) me Swagat Hai</h1>
   <p>Agar aap gadi wale hain to <a href="{{ url_for('register') }}">yahan register karein</a>.</p>
   <p>Agar aapko gadi chahiye to <a href="{{ url_for('search') }}">yahan search karein</a> aur
      sabse nazdeek ki gadi ka number paayein.</p>
+  <p><small>Bhada Gadi, Gadi Bhada, Gari Bhara, Bhara Gari — Auto, Car, Bike, Van, Truck sab
+     yahan online book kar sakte hain.</small></p>
 </div>
 </body></html>
 """
@@ -803,6 +809,23 @@ ADMIN_EDIT_DRIVER_HTML = """
 @app.route("/")
 def home():
     return render_template_string(HOME_HTML, style=BASE_STYLE)
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    txt = "User-agent: *\nAllow: /\nSitemap: " + request.url_root.rstrip("/") + "/sitemap.xml\n"
+    return app.response_class(txt, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    base = request.url_root.rstrip("/")
+    pages = ["/", "/register", "/search", "/help"]
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for p in pages:
+        xml += f"  <url><loc>{base}{p}</loc></url>\n"
+    xml += "</urlset>"
+    return app.response_class(xml, mimetype="application/xml")
 
 
 @app.route("/manifest.json")
