@@ -169,6 +169,135 @@ with app.app_context():
         print(f"Database Initialization Error: {e}")
 
 # ---------------------------------------------------------------------------
+# Multi-Language Translation System (English & Bengali)
+# ---------------------------------------------------------------------------
+TRANSLATIONS = {
+    'en': {
+        'app_title': 'Gadi Bhada',
+        'sub_title': 'Easily find vehicles or list your vehicle for rent in your area',
+        'nav_home': 'Home',
+        'nav_search': 'Find Vehicle',
+        'nav_register': 'Register Vehicle',
+        'nav_bookings': 'My Bookings',
+        'nav_help': 'Help & Support',
+        'nav_admin': 'Admin Login',
+        'welcome_msg': 'Welcome to Gadi Bhada App!',
+        'welcome_sub': 'Rent vehicles easily or list your vehicle for rental services.',
+        'btn_search': 'Find Vehicle (Search)',
+        'btn_register': 'Register Vehicle',
+        'reg_header': 'Vehicle Registration',
+        'driver_name': 'Driver/Owner Name',
+        'vehicle_type': 'Vehicle Type',
+        'vehicle_number': 'Vehicle Number',
+        'mobile_number': 'Mobile Number',
+        'city': 'City / Town',
+        'village': 'Village',
+        'post_office': 'Post Office',
+        'police_station': 'Police Station',
+        'district': 'District',
+        'pincode': 'PIN Code',
+        'use_gps': 'Use Current GPS Location',
+        'use_address': 'Get Lat/Lon from Address',
+        'latitude': 'Latitude',
+        'longitude': 'Longitude',
+        'btn_submit_reg': 'Register Now',
+        'search_header': 'Find Vehicle (Search)',
+        'all_vehicles': 'All Vehicles',
+        'btn_search_now': 'Search Vehicles',
+        'found_vehicles': 'Available Vehicles:',
+        'no_vehicles': 'No vehicles found in this location.',
+        'distance': 'Distance',
+        'btn_book': 'Book Now',
+        'book_header': 'Confirm Booking',
+        'passenger_name': 'Passenger Name',
+        'pickup_address': 'Pickup Location Address',
+        'btn_confirm_booking': 'Confirm Booking',
+        'booking_success': 'Booking Request Sent Successfully!',
+        'booking_success_msg': 'Your booking request has been submitted.',
+        'driver_contact': 'Driver Contact Number:',
+        'call_driver_note': 'You can contact the driver directly via phone.',
+        'my_bookings_header': 'Driver Booking Requests',
+        'enter_driver_mobile': 'Enter Registered Driver Mobile Number',
+        'view_bookings': 'View Bookings',
+        'accept': 'Accept',
+        'reject': 'Reject',
+        'no_requests': 'No pending booking requests.',
+        'help_header': 'Help & Complaint Support',
+        'who_are_you': 'Are you a Passenger or Driver?',
+        'your_complaint': 'Your Complaint / Message',
+        'btn_submit_complaint': 'Submit Complaint'
+    },
+    'bn': {
+        'app_title': 'গাড়ি ভাড়া',
+        'sub_title': 'আপনার এলাকায় সহজে গাড়ি খুঁজুন এবং গাড়ি রেজিস্ট্রেশন করুন',
+        'nav_home': 'হোম',
+        'nav_search': 'গাড়ি খুঁজুন',
+        'nav_register': 'গাড়ি রেজিস্ট্রেশন',
+        'nav_bookings': 'আমার বুকিং',
+        'nav_help': 'সাহায্য ও সাপোর্ট',
+        'nav_admin': 'এডমিন লগইন',
+        'welcome_msg': 'গাড়ি ভাড়া অ্যাপে আপনাকে স্বাগতম!',
+        'welcome_sub': 'সহজে গাড়ি ভাড়া নিন অথবা আপনার গাড়ি ভাড়া দেওয়ার জন্য নথিভুক্ত করুন।',
+        'btn_search': 'গাড়ি খুঁজুন (সার্চ)',
+        'btn_register': 'গাড়ি রেজিস্ট্রেশন করুন',
+        'reg_header': 'গাড়ি রেজিস্ট্রেশন ফর্ম',
+        'driver_name': 'চালক/মালিকের নাম',
+        'vehicle_type': 'গাড়ির ধরণ',
+        'vehicle_number': 'গাড়ির নম্বর',
+        'mobile_number': 'মোবাইল নম্বর',
+        'city': 'শহর / শহর এলাকা',
+        'village': 'গ্রাম',
+        'post_office': 'পোস্ট অফিস',
+        'police_station': 'থানা',
+        'district': 'জেলা',
+        'pincode': 'পিন কোড',
+        'use_gps': 'বর্তমান GPS লোকেশন ব্যবহার করুন',
+        'use_address': 'ঠিকানা থেকে লোকেশন বের করুন',
+        'latitude': 'অক্ষাংশ (Latitude)',
+        'longitude': 'দ্রাঘিমাংশ (Longitude)',
+        'btn_submit_reg': 'রেজিস্ট্রেশন সম্পূর্ণ করুন',
+        'search_header': 'গাড়ি খুঁজুন',
+        'all_vehicles': 'সব ধরনের গাড়ি',
+        'btn_search_now': 'গাড়ি খুঁজুন',
+        'found_vehicles': 'উপলব্ধ গাড়ি সমূহ:',
+        'no_vehicles': 'এই লোকেশনে কোনো গাড়ি পাওয়া যায়নি।',
+        'distance': 'দূরত্ব',
+        'btn_book': 'বুক করুন',
+        'book_header': 'বুকিং নিশ্চিতকরণ',
+        'passenger_name': 'যাত্রীর নাম',
+        'pickup_address': 'পিকআপ লোকেশনের ঠিকানা',
+        'btn_confirm_booking': 'বুকিং কনফার্ম করুন',
+        'booking_success': 'বুকিং রিকোয়েস্ট সফল হয়েছে!',
+        'booking_success_msg': 'আপনার বুকিং রিকোয়েস্ট চালকের কাছে পাঠানো হয়েছে।',
+        'driver_contact': 'চালকের মোবাইল নম্বর:',
+        'call_driver_note': 'আপনি সরাসরি চালকের সাথে কথা বলতে পারেন।',
+        'my_bookings_header': 'চালক বুকিং রিকোয়েস্ট',
+        'enter_driver_mobile': 'রেজিস্টার্ড চালকের মোবাইল নম্বর দিন',
+        'view_bookings': 'বুকিং দেখুন',
+        'accept': 'গ্রহণ করুন (Accept)',
+        'reject': 'বাতিল করুন (Reject)',
+        'no_requests': 'কোনো বুকিং রিকোয়েস্ট নেই।',
+        'help_header': 'সাহায্য ও অভিযোগ সাপোর্ট',
+        'who_are_you': 'আপনি কি যাত্রী নাকি চালক?',
+        'your_complaint': 'আপনার অভিযোগ / বার্তা',
+        'btn_submit_complaint': 'অভিযোগ জমা দিন'
+    }
+}
+
+@app.route('/set_lang/<lang_code>')
+def set_lang(lang_code):
+    if lang_code in ['en', 'bn']:
+        session['lang'] = lang_code
+    return redirect(request.referrer or url_for('home'))
+
+@app.context_processor
+def inject_translations():
+    lang = session.get('lang', 'bn')  # Default language is Bengali
+    def t(key):
+        return TRANSLATIONS.get(lang, TRANSLATIONS['bn']).get(key, key)
+    return dict(t=t, current_lang=lang)
+
+# ---------------------------------------------------------------------------
 # Helper Functions
 # ---------------------------------------------------------------------------
 def haversine_km(lat1, lon1, lat2, lon2):
@@ -222,9 +351,12 @@ BASE_STYLE = """
     body { background-color: #f4f6f9; color: #333; line-height: 1.6; padding-bottom: 60px; }
     header { background: #1e3c72; background: linear-gradient(to right, #2a5298, #1e3c72); color: #fff; padding: 15px 20px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     header h1 { font-size: 24px; margin-bottom: 5px; }
-    nav { background: #0f2027; display: flex; justify-content: center; flex-wrap: wrap; }
+    nav { background: #0f2027; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; padding: 5px 10px; }
     nav a { color: #fff; text-decoration: none; padding: 12px 18px; font-size: 14px; font-weight: 500; transition: background 0.3s; }
     nav a:hover { background: #203a43; }
+    .lang-switcher { margin-left: auto; padding: 5px 15px; }
+    .lang-btn { color: #fff; text-decoration: none; padding: 5px 10px; border-radius: 4px; font-weight: bold; border: 1px solid #ffffff55; }
+    .lang-btn.active { background: #28a745; border-color: #28a745; }
     .container { max-width: 800px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
     .btn { display: inline-block; background: #28a745; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; text-decoration: none; font-size: 15px; font-weight: bold; margin-top: 10px; }
     .btn:hover { background: #218838; }
@@ -278,7 +410,7 @@ function geocodeAddress() {
     
     var query = [vill, po, ps, dist, pin].filter(Boolean).join(", ");
     if(!query) {
-        alert("Pehle address details bharein!");
+        alert("Address details fill karein!");
         return;
     }
     fetch("https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(query))
@@ -289,7 +421,7 @@ function geocodeAddress() {
             document.getElementById("longitude").value = data[0].lon;
             alert("Address geocoded successfully!");
         } else {
-            alert("Address location nahi mili. Kripya Manual Location use karein.");
+            alert("Address location not found.");
         }
     })
     .catch(err => alert("Error finding location coordinates."));
@@ -298,35 +430,43 @@ function geocodeAddress() {
 """
 
 # ---------------------------------------------------------------------------
-# HTML Templates (With Admin Navigation Link Added)
+# Dynamic Translatable HTML Templates
 # ---------------------------------------------------------------------------
+NAVBAR_HTML = """
+<nav>
+    <a href="{{ url_for('home') }}">{{ t('nav_home') }}</a>
+    <a href="{{ url_for('search') }}">{{ t('nav_search') }}</a>
+    <a href="{{ url_for('register') }}">{{ t('nav_register') }}</a>
+    <a href="{{ url_for('my_bookings') }}">{{ t('nav_bookings') }}</a>
+    <a href="{{ url_for('help_page') }}">{{ t('nav_help') }}</a>
+    <a href="{{ url_for('admin_login') }}">{{ t('nav_admin') }}</a>
+    <div class="lang-switcher">
+        <a href="{{ url_for('set_lang', lang_code='en') }}" class="lang-btn {{ 'active' if current_lang == 'en' else '' }}">English</a>
+        <a href="{{ url_for('set_lang', lang_code='bn') }}" class="lang-btn {{ 'active' if current_lang == 'bn' else '' }}">বাংলা</a>
+    </div>
+</nav>
+"""
+
 HOME_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gadi Bhada - Home</title>
+    <title>{{ t('app_title') }} - Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
 </head>
 <body>
 <header>
-    <h1>গাড়ি ভাড়া (Gadi Bhada)</h1>
-    <p>Apnar elakai sahaje gadi khujun abong gadi register karun</p>
+    <h1>{{ t('app_title') }}</h1>
+    <p>{{ t('sub_title') }}</p>
 </header>
-<nav>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('search') }}">Gadi Khujun</a>
-    <a href="{{ url_for('register') }}">Gadi Register Karun</a>
-    <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
-    <a href="{{ url_for('help_page') }}">Help & Support</a>
-    <a href="{{ url_for('admin_login') }}">Admin Login</a>
-</nav>
+""" + NAVBAR_HTML + """
 <div class="container" style="text-align: center; padding: 40px 20px;">
-    <h2>Gadi Bhada App-e Swagatam!</h2>
-    <p style="margin: 20px 0; color: #666;">Sahaje gadi bhada nin athaba apnar gadi bhada dewar jonno list karun.</p>
+    <h2>{{ t('welcome_msg') }}</h2>
+    <p style="margin: 20px 0; color: #666;">{{ t('welcome_sub') }}</p>
     <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-        <a href="{{ url_for('search') }}" class="btn btn-primary" style="padding: 15px 25px;">Gadi Khujun (Search)</a>
-        <a href="{{ url_for('register') }}" class="btn" style="padding: 15px 25px;">Gadi Register Karun</a>
+        <a href="{{ url_for('search') }}" class="btn btn-primary" style="padding: 15px 25px;">{{ t('btn_search') }}</a>
+        <a href="{{ url_for('register') }}" class="btn" style="padding: 15px 25px;">{{ t('btn_register') }}</a>
     </div>
 </div>
 </body>
@@ -337,31 +477,24 @@ REGISTER_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gadi Register - Gadi Bhada</title>
+    <title>{{ t('reg_header') }} - {{ t('app_title') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
     {{ geo_script|safe }}
 </head>
 <body>
 <header>
-    <h1>Gadi Registration</h1>
+    <h1>{{ t('reg_header') }}</h1>
 </header>
-<nav>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('search') }}">Gadi Khujun</a>
-    <a href="{{ url_for('register') }}">Gadi Register Karun</a>
-    <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
-    <a href="{{ url_for('help_page') }}">Help & Support</a>
-    <a href="{{ url_for('admin_login') }}">Admin Login</a>
-</nav>
+""" + NAVBAR_HTML + """
 <div class="container">
     {% with messages = get_flashed_messages() %}
       {% if messages %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endif %}
     {% endwith %}
     <form method="POST">
-        <div class="form-group"><label>Driver/Owner Name</label><input type="text" name="name" required></div>
+        <div class="form-group"><label>{{ t('driver_name') }}</label><input type="text" name="name" required></div>
         <div class="form-group">
-            <label>Gadi Type</label>
+            <label>{{ t('vehicle_type') }}</label>
             <select name="vehicle_type" required>
                 <option value="Auto">Auto</option>
                 <option value="Car">Car</option>
@@ -370,25 +503,24 @@ REGISTER_HTML = """
                 <option value="Truck">Truck</option>
             </select>
         </div>
-        <div class="form-group"><label>Gadi Number</label><input type="text" name="vehicle_number" placeholder="WB-XX-XXXX" required></div>
-        <div class="form-group"><label>Mobile Number</label><input type="tel" name="contact_number" required></div>
-        <div class="form-group"><label>City / Town</label><input type="text" name="city"></div>
-        <div class="form-group"><label>Village (Gaon)</label><input type="text" id="village" name="village"></div>
-        <div class="form-group"><label>Post Office (PO)</label><input type="text" id="post_office" name="post_office"></div>
-        <div class="form-group"><label>Police Station (PS)</label><input type="text" id="police_station" name="police_station"></div>
-        <div class="form-group"><label>District</label><input type="text" id="district" name="district"></div>
-        <div class="form-group"><label>PIN Code</label><input type="text" id="pincode" name="pincode"></div>
+        <div class="form-group"><label>{{ t('vehicle_number') }}</label><input type="text" name="vehicle_number" placeholder="WB-XX-XXXX" required></div>
+        <div class="form-group"><label>{{ t('mobile_number') }}</label><input type="tel" name="contact_number" required></div>
+        <div class="form-group"><label>{{ t('city') }}</label><input type="text" name="city"></div>
+        <div class="form-group"><label>{{ t('village') }}</label><input type="text" id="village" name="village"></div>
+        <div class="form-group"><label>{{ t('post_office') }}</label><input type="text" id="post_office" name="post_office"></div>
+        <div class="form-group"><label>{{ t('police_station') }}</label><input type="text" id="police_station" name="police_station"></div>
+        <div class="form-group"><label>{{ t('district') }}</label><input type="text" id="district" name="district"></div>
+        <div class="form-group"><label>{{ t('pincode') }}</label><input type="text" id="pincode" name="pincode"></div>
         
         <hr style="margin:20px 0;">
-        <p><strong>Location Coordinates</strong></p>
-        <button type="button" class="btn btn-secondary" onclick="getLocation()">Use Current GPS Location</button>
-        <button type="button" class="btn btn-secondary" onclick="geocodeAddress()">Get Lat/Lon from Address</button>
+        <button type="button" class="btn btn-secondary" onclick="getLocation()">{{ t('use_gps') }}</button>
+        <button type="button" class="btn btn-secondary" onclick="geocodeAddress()">{{ t('use_address') }}</button>
         <span id="geo-status" style="color: green; font-weight: bold; margin-left: 10px;"></span>
         
-        <div class="form-group" style="margin-top: 10px;"><label>Latitude</label><input type="text" id="latitude" name="latitude" required></div>
-        <div class="form-group"><label>Longitude</label><input type="text" id="longitude" name="longitude" required></div>
+        <div class="form-group" style="margin-top: 10px;"><label>{{ t('latitude') }}</label><input type="text" id="latitude" name="latitude" required></div>
+        <div class="form-group"><label>{{ t('longitude') }}</label><input type="text" id="longitude" name="longitude" required></div>
         
-        <button type="submit" class="btn">Register Karein</button>
+        <button type="submit" class="btn">{{ t('btn_submit_reg') }}</button>
     </form>
 </div>
 </body>
@@ -399,29 +531,22 @@ SEARCH_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Search Gadi - Gadi Bhada</title>
+    <title>{{ t('search_header') }} - {{ t('app_title') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
     {{ geo_script|safe }}
 </head>
 <body>
 <header>
-    <h1>Gadi Khujun (Search)</h1>
+    <h1>{{ t('search_header') }}</h1>
 </header>
-<nav>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('search') }}">Gadi Khujun</a>
-    <a href="{{ url_for('register') }}">Gadi Register Karun</a>
-    <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
-    <a href="{{ url_for('help_page') }}">Help & Support</a>
-    <a href="{{ url_for('admin_login') }}">Admin Login</a>
-</nav>
+""" + NAVBAR_HTML + """
 <div class="container">
     <form method="POST">
         <div class="form-group">
-            <label>Gadi Type Filter</label>
+            <label>{{ t('vehicle_type') }}</label>
             <select name="vehicle_type">
-                <option value="">Shob Gadi (All)</option>
+                <option value="">{{ t('all_vehicles') }}</option>
                 <option value="Auto">Auto</option>
                 <option value="Car">Car</option>
                 <option value="Bike">Bike</option>
@@ -429,26 +554,26 @@ SEARCH_HTML = """
                 <option value="Truck">Truck</option>
             </select>
         </div>
-        <button type="button" class="btn btn-secondary" onclick="getLocation()">Amar Location Nin (GPS)</button>
-        <div class="form-group" style="margin-top:10px;"><label>Latitude</label><input type="text" id="latitude" name="latitude" value="{{ search_lat }}" required></div>
-        <div class="form-group"><label>Longitude</label><input type="text" id="longitude" name="longitude" value="{{ search_lon }}" required></div>
-        <button type="submit" class="btn btn-primary">Search Karein</button>
+        <button type="button" class="btn btn-secondary" onclick="getLocation()">{{ t('use_gps') }}</button>
+        <div class="form-group" style="margin-top:10px;"><label>{{ t('latitude') }}</label><input type="text" id="latitude" name="latitude" value="{{ search_lat }}" required></div>
+        <div class="form-group"><label>{{ t('longitude') }}</label><input type="text" id="longitude" name="longitude" value="{{ search_lon }}" required></div>
+        <button type="submit" class="btn btn-primary">{{ t('btn_search_now') }}</button>
     </form>
 
     {% if results is not none %}
-        <h3 style="margin-top: 25px;">Khunje Pawa Gadi Solutions:</h3>
+        <h3 style="margin-top: 25px;">{{ t('found_vehicles') }}</h3>
         {% if results %}
             {% for driver in results %}
                 <div class="card" style="margin-top:15px;">
                     <div class="card-title">{{ driver.name }} ({{ driver.vehicle_type }})</div>
-                    <p><strong>Gadi Number:</strong> {{ driver.vehicle_number }}</p>
+                    <p><strong>{{ t('vehicle_number') }}:</strong> {{ driver.vehicle_number }}</p>
                     <p><strong>Address:</strong> {{ driver.full_address }}</p>
-                    <p><strong>Distance:</strong> <span class="badge bg-success">{{ driver.distance }} KM door</span></p>
-                    <a href="{{ url_for('book', driver_id=driver.id, lat=search_lat, lon=search_lon) }}" class="btn">Book Karein</a>
+                    <p><strong>{{ t('distance') }}:</strong> <span class="badge bg-success">{{ driver.distance }} KM</span></p>
+                    <a href="{{ url_for('book', driver_id=driver.id, lat=search_lat, lon=search_lon) }}" class="btn">{{ t('btn_book') }}</a>
                 </div>
             {% endfor %}
         {% else %}
-            <p style="margin-top:15px; color: red;">Kono Gadi Khunje Pawa Jayni.</p>
+            <p style="margin-top:15px; color: red;">{{ t('no_vehicles') }}</p>
         {% endif %}
     {% endif %}
 </div>
@@ -460,39 +585,32 @@ BOOK_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Book Gadi - Gadi Bhada</title>
+    <title>{{ t('book_header') }} - {{ t('app_title') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
 </head>
 <body>
 <header>
-    <h1>Booking Confirm Karein</h1>
+    <h1>{{ t('book_header') }}</h1>
 </header>
-<nav>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('search') }}">Gadi Khujun</a>
-    <a href="{{ url_for('register') }}">Gadi Register Karun</a>
-    <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
-    <a href="{{ url_for('help_page') }}">Help & Support</a>
-    <a href="{{ url_for('admin_login') }}">Admin Login</a>
-</nav>
+""" + NAVBAR_HTML + """
 <div class="container">
     {% if driver %}
         <div class="card">
             <h3>Driver: {{ driver.name }}</h3>
-            <p><strong>Gadi:</strong> {{ driver.vehicle_type }} ({{ driver.vehicle_number }})</p>
+            <p><strong>{{ t('vehicle_type') }}:</strong> {{ driver.vehicle_type }} ({{ driver.vehicle_number }})</p>
             <p><strong>Location:</strong> {{ driver.full_address }}</p>
         </div>
         <form method="POST">
-            <div class="form-group"><label>Apnar Naam (Passenger Name)</label><input type="text" name="passenger_name" required></div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" name="passenger_contact" required></div>
-            <div class="form-group"><label>Pickup Location Address</label><input type="text" name="pickup_place" required></div>
+            <div class="form-group"><label>{{ t('passenger_name') }}</label><input type="text" name="passenger_name" required></div>
+            <div class="form-group"><label>{{ t('mobile_number') }}</label><input type="tel" name="passenger_contact" required></div>
+            <div class="form-group"><label>{{ t('pickup_address') }}</label><input type="text" name="pickup_place" required></div>
             <input type="hidden" name="pickup_lat" value="{{ search_lat }}">
             <input type="hidden" name="pickup_lon" value="{{ search_lon }}">
-            <button type="submit" class="btn btn-primary">Confirm Booking</button>
+            <button type="submit" class="btn btn-primary">{{ t('btn_confirm_booking') }}</button>
         </form>
     {% else %}
-        <p style="color:red;">Driver pawagaa jayni.</p>
+        <p style="color:red;">Driver not found.</p>
     {% endif %}
 </div>
 </body>
@@ -503,20 +621,20 @@ BOOKING_CONFIRM_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Booking Success - Gadi Bhada</title>
+    <title>{{ t('booking_success') }} - {{ t('app_title') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
 </head>
 <body>
 <header>
-    <h1>Booking Request Softol!</h1>
+    <h1>{{ t('booking_success') }}</h1>
 </header>
 <div class="container" style="text-align:center;">
-    <h2 style="color:green;">Apnar Booking Request Pathano Hoyeche!</h2>
+    <h2 style="color:green;">{{ t('booking_success_msg') }}</h2>
     <p style="margin:15px 0;">Driver Name: <strong>{{ driver_name }}</strong></p>
-    <p>Driver Contact Number: <strong>{{ driver_contact }}</strong></p>
-    <p>Apni sora sori driver er sathe kotha bolte paren.</p>
-    <a href="{{ url_for('home') }}" class="btn">Home-e Phire Jani</a>
+    <p>{{ t('driver_contact') }} <strong>{{ driver_contact }}</strong></p>
+    <p>{{ t('call_driver_note') }}</p>
+    <a href="{{ url_for('home') }}" class="btn">{{ t('nav_home') }}</a>
 </div>
 </body>
 </html>
@@ -526,29 +644,22 @@ MY_BOOKINGS_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Amar Booking - Gadi Bhada</title>
+    <title>{{ t('my_bookings_header') }} - {{ t('app_title') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
 </head>
 <body>
 <header>
-    <h1>Driver Booking Requests</h1>
+    <h1>{{ t('my_bookings_header') }}</h1>
 </header>
-<nav>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('search') }}">Gadi Khujun</a>
-    <a href="{{ url_for('register') }}">Gadi Register Karun</a>
-    <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
-    <a href="{{ url_for('help_page') }}">Help & Support</a>
-    <a href="{{ url_for('admin_login') }}">Admin Login</a>
-</nav>
+""" + NAVBAR_HTML + """
 <div class="container">
     <form method="POST">
         <div class="form-group">
-            <label>Driver Registered Mobile Number Enter Karein</label>
+            <label>{{ t('enter_driver_mobile') }}</label>
             <input type="tel" name="contact_number" value="{{ contact_number }}" required>
         </div>
-        <button type="submit" class="btn">Booking Dekhun</button>
+        <button type="submit" class="btn">{{ t('view_bookings') }}</button>
     </form>
 
     {% if bookings is not none %}
@@ -556,9 +667,9 @@ MY_BOOKINGS_HTML = """
         {% if bookings %}
             {% for b in bookings %}
                 <div class="card">
-                    <p><strong>Passenger Name:</strong> {{ b.passenger_name }}</p>
+                    <p><strong>{{ t('passenger_name') }}:</strong> {{ b.passenger_name }}</p>
                     <p><strong>Contact:</strong> {{ b.passenger_contact }}</p>
-                    <p><strong>Pickup Location:</strong> {{ b.pickup_place }}</p>
+                    <p><strong>{{ t('pickup_address') }}:</strong> {{ b.pickup_place }}</p>
                     <p><strong>Status:</strong> 
                         <span class="badge {% if b.status=='accepted' %}bg-success{% elif b.status=='rejected' %}bg-danger{% else %}bg-warning{% endif %}">
                             {{ b.status }}
@@ -567,14 +678,14 @@ MY_BOOKINGS_HTML = """
                     {% if b.status == 'pending' %}
                         <form method="POST" action="{{ url_for('update_booking', booking_id=b.id) }}" style="margin-top:10px; display:flex; gap:10px;">
                             <input type="hidden" name="contact_number" value="{{ contact_number }}">
-                            <button type="submit" name="action" value="accept" class="btn btn-primary">Accept</button>
-                            <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+                            <button type="submit" name="action" value="accept" class="btn btn-primary">{{ t('accept') }}</button>
+                            <button type="submit" name="action" value="reject" class="btn btn-danger">{{ t('reject') }}</button>
                         </form>
                     {% endif %}
                 </div>
             {% endfor %}
         {% else %}
-            <p style="margin-top:15px;">Kono booking request nahi.</p>
+            <p style="margin-top:15px;">{{ t('no_requests') }}</p>
         {% endif %}
     {% endif %}
 </div>
@@ -586,39 +697,32 @@ HELP_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Help & Support - Gadi Bhada</title>
+    <title>{{ t('help_header') }} - {{ t('app_title') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
 </head>
 <body>
 <header>
-    <h1>Help & Complaint Support</h1>
+    <h1>{{ t('help_header') }}</h1>
 </header>
-<nav>
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('search') }}">Gadi Khujun</a>
-    <a href="{{ url_for('register') }}">Gadi Register Karun</a>
-    <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
-    <a href="{{ url_for('help_page') }}">Help & Support</a>
-    <a href="{{ url_for('admin_login') }}">Admin Login</a>
-</nav>
+""" + NAVBAR_HTML + """
 <div class="container">
     {% with messages = get_flashed_messages() %}
       {% if messages %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endif %}
     {% endwith %}
     <form method="POST">
         <div class="form-group">
-            <label>Apni ke?</label>
+            <label>{{ t('who_are_you') }}</label>
             <select name="reporter_type">
                 <option value="Passenger">Passenger</option>
                 <option value="Driver">Driver</option>
             </select>
         </div>
-        <div class="form-group"><label>Naam</label><input type="text" name="name" required></div>
-        <div class="form-group"><label>Contact Number</label><input type="tel" name="contact_number" required></div>
-        <div class="form-group"><label>Gadi Number (Jodi thake)</label><input type="text" name="related_vehicle_number"></div>
-        <div class="form-group"><label>Apnar Abhijog / Message</label><textarea name="message" rows="4" required></textarea></div>
-        <button type="submit" class="btn btn-primary">Submit Karein</button>
+        <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
+        <div class="form-group"><label>{{ t('mobile_number') }}</label><input type="tel" name="contact_number" required></div>
+        <div class="form-group"><label>{{ t('vehicle_number') }}</label><input type="text" name="related_vehicle_number"></div>
+        <div class="form-group"><label>{{ t('your_complaint') }}</label><textarea name="message" rows="4" required></textarea></div>
+        <button type="submit" class="btn btn-primary">{{ t('btn_submit_complaint') }}</button>
     </form>
 </div>
 </body>
@@ -733,26 +837,26 @@ ADMIN_EDIT_DRIVER_HTML = """
 <div class="container">
     <h2>Edit Driver Details</h2>
     <form method="POST">
-        <div class="form-group"><label>Naam</label><input type="text" name="name" value="{{ driver.name }}" required></div>
+        <div class="form-group"><label>Name</label><input type="text" name="name" value="{{ driver.name }}" required></div>
         <div class="form-group">
-            <label>Gadi ka Type</label>
+            <label>Vehicle Type</label>
             <select name="vehicle_type" required>
                 {% for vt in ['Auto', 'Car', 'Bike', 'Van', 'Truck'] %}
                     <option value="{{ vt }}" {% if driver.vehicle_type == vt %}selected{% endif %}>{{ vt }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group"><label>Gadi Number</label><input type="text" name="vehicle_number" value="{{ driver.vehicle_number }}" required></div>
+        <div class="form-group"><label>Vehicle Number</label><input type="text" name="vehicle_number" value="{{ driver.vehicle_number }}" required></div>
         <div class="form-group"><label>Contact Number</label><input type="tel" name="contact_number" value="{{ driver.contact_number }}" required></div>
         <div class="form-group"><label>City</label><input type="text" name="city" value="{{ driver.city or '' }}"></div>
-        <div class="form-group"><label>Vill (Gaon)</label><input type="text" name="village" value="{{ driver.village or '' }}"></div>
-        <div class="form-group"><label>PO (Post Office)</label><input type="text" name="post_office" value="{{ driver.post_office or '' }}"></div>
-        <div class="form-group"><label>PS (Police Station)</label><input type="text" name="police_station" value="{{ driver.police_station or '' }}"></div>
-        <div class="form-group"><label>Dist (District)</label><input type="text" name="district" value="{{ driver.district or '' }}"></div>
+        <div class="form-group"><label>Village</label><input type="text" name="village" value="{{ driver.village or '' }}"></div>
+        <div class="form-group"><label>Post Office</label><input type="text" name="post_office" value="{{ driver.post_office or '' }}"></div>
+        <div class="form-group"><label>Police Station</label><input type="text" name="police_station" value="{{ driver.police_station or '' }}"></div>
+        <div class="form-group"><label>District</label><input type="text" name="district" value="{{ driver.district or '' }}"></div>
         <div class="form-group"><label>PIN Code</label><input type="text" name="pincode" value="{{ driver.pincode or '' }}"></div>
         <div class="form-group"><label>Latitude</label><input type="text" name="latitude" value="{{ driver.latitude }}" required></div>
         <div class="form-group"><label>Longitude</label><input type="text" name="longitude" value="{{ driver.longitude }}" required></div>
-        <button type="submit" class="btn">Update Karein</button>
+        <button type="submit" class="btn">Update Driver</button>
     </form>
 </div>
 </body>
@@ -837,11 +941,11 @@ def register():
                     ),
                 )
             conn.commit()
-            flash("Mubarak ho! Aapki gadi safaltapurvak register ho gayi hai.")
+            flash("Registration Successful!")
             return redirect(url_for("register"))
         except DB_INTEGRITY_ERRORS:
             conn.rollback()
-            flash("Ye Vehicle Number pehle se registered hai.")
+            flash("Vehicle Number pehle se registered hai.")
         finally:
             conn.close()
 
@@ -1092,7 +1196,7 @@ def help_page():
             )
         conn.commit()
         conn.close()
-        flash("Aapki shikayat darj kar li gayi hai. Hum ise jald hi dekhenge.")
+        flash("Complaint Submitted Successfully.")
         return redirect(url_for("help_page"))
 
     return render_template_string(HELP_HTML, style=BASE_STYLE)
