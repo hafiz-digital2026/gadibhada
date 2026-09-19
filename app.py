@@ -20,10 +20,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "gadi_bhada_super_secret_key_123")
 
-# Admin Credentials
+# Updated Admin Credentials (Password: Gadibhada@2026)
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD_HASH = generate_password_hash(
-    os.environ.get("ADMIN_PASSWORD", "admin123")
+    os.environ.get("ADMIN_PASSWORD", "Gadibhada@2026")
 )
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -162,7 +162,6 @@ def init_db():
     conn.close()
 
 
-# Database initialization on app boot
 with app.app_context():
     try:
         init_db()
@@ -173,7 +172,7 @@ with app.app_context():
 # Helper Functions
 # ---------------------------------------------------------------------------
 def haversine_km(lat1, lon1, lat2, lon2):
-    R = 6371.0  # Earth's radius in kilometers
+    R = 6371.0
     dlat = math.radians(lat2 - lat1)
     dlon = math.radians(lon2 - lon1)
     a = (
@@ -299,7 +298,7 @@ function geocodeAddress() {
 """
 
 # ---------------------------------------------------------------------------
-# HTML Templates
+# HTML Templates (With Admin Navigation Link Added)
 # ---------------------------------------------------------------------------
 HOME_HTML = """
 <!DOCTYPE html>
@@ -320,6 +319,7 @@ HOME_HTML = """
     <a href="{{ url_for('register') }}">Gadi Register Karun</a>
     <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
     <a href="{{ url_for('help_page') }}">Help & Support</a>
+    <a href="{{ url_for('admin_login') }}">Admin Login</a>
 </nav>
 <div class="container" style="text-align: center; padding: 40px 20px;">
     <h2>Gadi Bhada App-e Swagatam!</h2>
@@ -352,6 +352,7 @@ REGISTER_HTML = """
     <a href="{{ url_for('register') }}">Gadi Register Karun</a>
     <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
     <a href="{{ url_for('help_page') }}">Help & Support</a>
+    <a href="{{ url_for('admin_login') }}">Admin Login</a>
 </nav>
 <div class="container">
     {% with messages = get_flashed_messages() %}
@@ -413,6 +414,7 @@ SEARCH_HTML = """
     <a href="{{ url_for('register') }}">Gadi Register Karun</a>
     <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
     <a href="{{ url_for('help_page') }}">Help & Support</a>
+    <a href="{{ url_for('admin_login') }}">Admin Login</a>
 </nav>
 <div class="container">
     <form method="POST">
@@ -472,6 +474,7 @@ BOOK_HTML = """
     <a href="{{ url_for('register') }}">Gadi Register Karun</a>
     <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
     <a href="{{ url_for('help_page') }}">Help & Support</a>
+    <a href="{{ url_for('admin_login') }}">Admin Login</a>
 </nav>
 <div class="container">
     {% if driver %}
@@ -537,6 +540,7 @@ MY_BOOKINGS_HTML = """
     <a href="{{ url_for('register') }}">Gadi Register Karun</a>
     <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
     <a href="{{ url_for('help_page') }}">Help & Support</a>
+    <a href="{{ url_for('admin_login') }}">Admin Login</a>
 </nav>
 <div class="container">
     <form method="POST">
@@ -596,6 +600,7 @@ HELP_HTML = """
     <a href="{{ url_for('register') }}">Gadi Register Karun</a>
     <a href="{{ url_for('my_bookings') }}">Amar Booking</a>
     <a href="{{ url_for('help_page') }}">Help & Support</a>
+    <a href="{{ url_for('admin_login') }}">Admin Login</a>
 </nav>
 <div class="container">
     {% with messages = get_flashed_messages() %}
