@@ -225,7 +225,32 @@ TRANSLATIONS = {
         'help_header': 'Help & Complaint Support',
         'who_are_you': 'Are you a Passenger or Driver?',
         'your_complaint': 'Your Complaint / Message',
-        'btn_submit_complaint': 'Submit Complaint'
+        'btn_submit_complaint': 'Submit Complaint',
+        'admin_panel_login': 'Admin Panel Login',
+        'username': 'Username',
+        'password': 'Password',
+        'btn_login': 'Login',
+        'admin_dashboard': 'Admin Dashboard',
+        'logout': 'Logout',
+        'registered_drivers': 'Registered Drivers',
+        'complaints_header': 'Complaints',
+        'th_id': 'ID',
+        'th_name': 'Name',
+        'th_type': 'Type',
+        'th_number': 'Number',
+        'th_contact': 'Contact',
+        'th_address': 'Address',
+        'th_status': 'Status',
+        'th_actions': 'Actions',
+        'active': 'Active',
+        'disabled': 'Disabled',
+        'toggle': 'Toggle',
+        'edit': 'Edit',
+        'delete': 'Delete',
+        'th_gadi_no': 'Vehicle No',
+        'th_message': 'Message',
+        'th_action': 'Action',
+        'resolve': 'Resolve',
     },
     'bn': {
         'app_title': 'গাড়ি ভাড়া',
@@ -280,7 +305,32 @@ TRANSLATIONS = {
         'help_header': 'সাহায্য ও অভিযোগ সাপোর্ট',
         'who_are_you': 'আপনি কি যাত্রী নাকি চালক?',
         'your_complaint': 'আপনার অভিযোগ / বার্তা',
-        'btn_submit_complaint': 'অভিযোগ জমা দিন'
+        'btn_submit_complaint': 'অভিযোগ জমা দিন',
+        'admin_panel_login': 'এডমিন প্যানেল লগইন',
+        'username': 'ইউজারনেম',
+        'password': 'পাসওয়ার্ড',
+        'btn_login': 'লগইন',
+        'admin_dashboard': 'এডমিন ড্যাশবোর্ড',
+        'logout': 'লগআউট',
+        'registered_drivers': 'নিবন্ধিত চালকগণ',
+        'complaints_header': 'অভিযোগসমূহ',
+        'th_id': 'আইডি',
+        'th_name': 'নাম',
+        'th_type': 'ধরণ',
+        'th_number': 'নম্বর',
+        'th_contact': 'যোগাযোগ',
+        'th_address': 'ঠিকানা',
+        'th_status': 'অবস্থা',
+        'th_actions': 'কার্যক্রম',
+        'active': 'সক্রিয়',
+        'disabled': 'নিষ্ক্রিয়',
+        'toggle': 'টগল',
+        'edit': 'সম্পাদনা',
+        'delete': 'মুছুন',
+        'th_gadi_no': 'গাড়ির নম্বর',
+        'th_message': 'বার্তা',
+        'th_action': 'কার্যক্রম',
+        'resolve': 'সমাধান',
     }
 }
 
@@ -733,20 +783,21 @@ ADMIN_LOGIN_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Login</title>
+    <title>{{ t('admin_panel_login') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
 </head>
 <body>
+""" + NAVBAR_HTML + """
 <div class="container" style="max-width:400px; margin-top:50px;">
-    <h2>Admin Panel Login</h2>
+    <h2>{{ t('admin_panel_login') }}</h2>
     {% with messages = get_flashed_messages() %}
       {% if messages %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endif %}
     {% endwith %}
     <form method="POST">
-        <div class="form-group"><label>Username</label><input type="text" name="username" required></div>
-        <div class="form-group"><label>Password</label><input type="password" name="password" required></div>
-        <button type="submit" class="btn btn-primary">Login</button>
+        <div class="form-group"><label>{{ t('username') }}</label><input type="text" name="username" required></div>
+        <div class="form-group"><label>{{ t('password') }}</label><input type="password" name="password" required></div>
+        <button type="submit" class="btn btn-primary">{{ t('btn_login') }}</button>
     </form>
 </div>
 </body>
@@ -757,24 +808,24 @@ ADMIN_DASHBOARD_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
+    <title>{{ t('admin_dashboard') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{ style|safe }}
 </head>
 <body>
 <header>
-    <h1>Admin Dashboard</h1>
-    <a href="{{ url_for('admin_logout') }}" style="color:white;">Logout</a>
+    <h1>{{ t('admin_dashboard') }}</h1>
+    <a href="{{ url_for('admin_logout') }}" style="color:white;">{{ t('logout') }}</a>
 </header>
 <div class="container" style="max-width:1100px;">
     {% with messages = get_flashed_messages() %}
       {% if messages %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endif %}
     {% endwith %}
     
-    <h3>Registered Drivers</h3>
+    <h3>{{ t('registered_drivers') }}</h3>
     <table>
         <tr>
-            <th>ID</th><th>Name</th><th>Type</th><th>Number</th><th>Contact</th><th>Address</th><th>Status</th><th>Actions</th>
+            <th>{{ t('th_id') }}</th><th>{{ t('th_name') }}</th><th>{{ t('th_type') }}</th><th>{{ t('th_number') }}</th><th>{{ t('th_contact') }}</th><th>{{ t('th_address') }}</th><th>{{ t('th_status') }}</th><th>{{ t('th_actions') }}</th>
         </tr>
         {% for d in drivers %}
         <tr>
@@ -784,23 +835,23 @@ ADMIN_DASHBOARD_HTML = """
             <td>{{ d.vehicle_number }}</td>
             <td>{{ d.contact_number }}</td>
             <td>{{ d.full_address }}</td>
-            <td>{{ 'Active' if d.is_available==1 else 'Disabled' }}</td>
+            <td>{{ t('active') if d.is_available==1 else t('disabled') }}</td>
             <td>
                 <form method="POST" action="{{ url_for('admin_toggle_driver', driver_id=d.id) }}" style="display:inline;">
-                    <button type="submit" class="btn btn-secondary" style="padding:2px 5px; font-size:12px;">Toggle</button>
+                    <button type="submit" class="btn btn-secondary" style="padding:2px 5px; font-size:12px;">{{ t('toggle') }}</button>
                 </form>
-                <a href="{{ url_for('admin_edit_driver', driver_id=d.id) }}" class="btn btn-primary" style="padding:2px 5px; font-size:12px;">Edit</a>
+                <a href="{{ url_for('admin_edit_driver', driver_id=d.id) }}" class="btn btn-primary" style="padding:2px 5px; font-size:12px;">{{ t('edit') }}</a>
                 <form method="POST" action="{{ url_for('admin_delete_driver', driver_id=d.id) }}" style="display:inline;">
-                    <button type="submit" class="btn btn-danger" style="padding:2px 5px; font-size:12px;">Delete</button>
+                    <button type="submit" class="btn btn-danger" style="padding:2px 5px; font-size:12px;">{{ t('delete') }}</button>
                 </form>
             </td>
         </tr>
         {% endfor %}
     </table>
 
-    <h3 style="margin-top:30px;">Complaints</h3>
+    <h3 style="margin-top:30px;">{{ t('complaints_header') }}</h3>
     <table>
-        <tr><th>ID</th><th>Type</th><th>Name</th><th>Contact</th><th>Gadi No</th><th>Message</th><th>Status</th><th>Action</th></tr>
+        <tr><th>{{ t('th_id') }}</th><th>{{ t('th_type') }}</th><th>{{ t('th_name') }}</th><th>{{ t('th_contact') }}</th><th>{{ t('th_gadi_no') }}</th><th>{{ t('th_message') }}</th><th>{{ t('th_status') }}</th><th>{{ t('th_action') }}</th></tr>
         {% for c in complaints %}
         <tr>
             <td>{{ c.id }}</td>
@@ -813,7 +864,7 @@ ADMIN_DASHBOARD_HTML = """
             <td>
                 {% if c.status != 'resolved' %}
                 <form method="POST" action="{{ url_for('admin_resolve_complaint', complaint_id=c.id) }}">
-                    <button type="submit" class="btn btn-primary" style="padding:2px 5px; font-size:12px;">Resolve</button>
+                    <button type="submit" class="btn btn-primary" style="padding:2px 5px; font-size:12px;">{{ t('resolve') }}</button>
                 </form>
                 {% endif %}
             </td>
