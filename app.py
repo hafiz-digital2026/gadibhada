@@ -243,6 +243,7 @@ if ('serviceWorker' in navigator) {
 
 HOME_HTML = """
 <!doctype html><html><head>
+<meta name="google-site-verification" content="vhLYAYVANSJWAJ0JE59MCRXufgDeQp-hwPQcIAEMl84" />
 <title>Gadi Bhada - Bhada Gadi | Gari Bhara Online Booking</title>
 <meta name="description" content="Gadi Bhada - Bhada Gadi, Gari Bhara, Bhara Gari online book karein. Apne area ke sabse nazdeek Auto, Car, Bike, Van, Truck dhundhein aur seedha driver ka contact number payein.">
 <meta name="keywords" content="gadi bhada, bhada gadi, gadibhada, bhadagadi, gari bhara, bhara gari, garibhara, bharagari, car rental near me, auto booking, malda gadi bhada">
